@@ -47,7 +47,6 @@ wrapHtml = function (html) {
 }
 
 window.getHtml = async function (text) {
-	console.log(5555555555, text)
 	const res = await httpsGet({
 		hostname: 'wttr.in',
 		path: `/${text}`,
