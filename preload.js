@@ -1,5 +1,4 @@
 const https = require('https');
-const fs = require('fs');
 
 function httpsGet({ body, ...options }) {
 	return new Promise((resolve, reject) => {
