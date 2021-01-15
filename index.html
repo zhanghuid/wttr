@@ -6,16 +6,34 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>wttr</title>
 	<link rel="stylesheet" type="text/css" href="assets/style.css">
-	<link rel="stylesheet" type="text/css" href="assets/source-code-pro.css">
 	<script src="assets/jquery.min.js"></script>
-	
+
 </head>
 
 <body>
 	<div id="app"></div>
 	<script>
-		let app = document.querySelector('#app');
-		let input = '';
+		let app = document.querySelector('#app')
+		let startTime = new Date().getTime()
+		let input = ''
+
+		wrapHtml = function (html) {
+
+			let regexs = [
+				/<a [^>]+>.+<\/a>/gm,
+				/<script\b[^>]*>[\s\S]*<\/script>/gm,
+				/(<link.*\s+href=(?:"[^"]*"|'[^']*')[^<]*>)/gm,
+				/<form [\s\S]*<\/form>/gm
+			]
+
+			regexs.forEach(element => {
+				html = html.replace(element, function (a) {
+					return ''
+				})
+			})
+
+			return html
+		}
 
 		function useHtml(input) {
 			app.innerHTML = `
@@ -25,9 +43,11 @@
     </div>
 </div>
 			`
-			window.getHtml(input).then((data) => {
-				app.innerHTML = data;
-			});
+			$.get(`http://wttr.in/${input}`, function (data) {
+				let endTime = new Date().getTime()
+				console.log(`${input} spend time: ` + (endTime - startTime) / 1000)
+				app.innerHTML = wrapHtml(data)
+			})
 		}
 
 		utools.onPluginEnter(({ code, type, payload }) => {
@@ -43,17 +63,17 @@
 					useHtml(text);
 				}
 
-			}, "请输入地址.....");
+			}, "请输入地址.....")
 		});
 
 		$(document).keydown(e => {
 			switch (e.keyCode) {
 				case 13:
-					useHtml(input);
-					break;
+					useHtml(input)
+					break
 				case 32:
-					useHtml(input);
-					break;
+					useHtml(input)
+					break
 			}
 		});
 
